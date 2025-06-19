@@ -129,7 +129,7 @@ Open the virtual machine and then open terminal on it. Now, First we try to get 
 
 ## LAB 1
 
-**1. Run 'picorv32a' design synthesis using OpenLANE flow and generate necessary outputs.**
+**1. Run 'picorv32a' design synthesis using OpenLANE flow**
 
 The Path for the current working directory:
 ```
@@ -167,3 +167,120 @@ Calculation of Flop Ratio and DFF % from synthesis statistics report file
 --------
 ## DAY 2
 ### Good floorplan vs bad floorplan and introduction to library cells
+
+Netlist describes the connectivity between all the Electronic components. Below, represents the netlisting of the various Flip-Flops and logic gates.These needs to be converted to specified physical dimensions for placing inside the core. [2.1] 
+
+
+Consider both standard cells and FF has 1 unit height and width so there area is 1 sq unit.Next calculate area occupied by the netlist on a silicon wafer. Thus since 4 gates/flip-flops here, the total size of the silicon wafer will 4 sq. units.
+
+Core is defined as the section of the chip where the fundamental logic of the design is placed. Die consists of core, it is a small semiconductor material specimen on which the fundamental circuit is fabricated.
+
+Utilisation factor is the Area occupied by netlist / Total area of core. If the logical cells occupy the core fully, it is known as 100% utilisation. Aspect Ratio is the ratio between height and width. If the chip is square - it is 1, else the chip is rectangular in shape.
+For eg. in the fig above:
+
+Utilisation factor = 50 %
+
+Aspect Ratio = 2 : 4 = 1 : 2 = .5
+
+### Preplaced cells
+
+Pre-Placed cells are complex logic blocks that can be reused. They are already implemented and cannot be touched by Auto Place and Route tools - and hence are required to be very well designed.
+
+For this first we divide the logic into blocks - while preserving the connectivity of the logic. By extending IO pins and making connections we can convert the logic into two parts that can be used as needed elsewhere in the design if needed. The various preplaced blocks available include memory, clock-gating cell, comparator, MUX.
+
+Thus Floorplanning is the arrangement of these IPs onto the chip.
+
+### Decoupling Capacitor
+
+Decoupling capacitors are placed locally around the pre-placed cells. The decoupling capacitor is a large capacitor completely full of charge whose voltage is equivalent to the power supply. When many gates switch at the same time, the power supply may not respond quickly enough, leading to voltage drops or noise on the power lines. This unstable power can cause incorrect logic behavior or timing issues in the chip. During switching activity the decoupling capacitor decouples the circuit from the main supply and provides the necessary voltage required by the pre placed cells. 
+
+### Power Planning
+
+As all coupling capacitors present in the circuit demands the power suppy simultaneosly a single power supply cannot adhere to the demands which reult in noise in the circuit cause due to voltage groop or ground bounce. Hence, power planning is very important part of floor planning. During this stage mulltiple power supply are placed in a chip for proper fuctioning. One structure for the power planning is the mseh structure where multiple power and groud lines are arrange in horizontal abd vertical manner as shown in figure below.
+
+### Pin placement
+
+For proper pin placement the connectivity information coded using verilog/vhdl language called netlist is considered. The location of input and output pin depensd upon the conncetivity requirement and the designer. However, the basic trend is to select a location which results in reduce connectivity length. Optimal pin placement is done taking care about the less buffering and less amount of power consumption. The size of the clock pins are wider as compared to the other data pins. The locgiical cell blockage is done to make sure that the automated PnR does not used the are for placement of cells.
+
+Thus the complete deign is:
+
+## LAB DAY 2
+
+**1. Run floorplan**
+```tcl
+# to access all the tools available in the openLANE
+bash-4.2$ flow.tcl -interactive
+
+package require openlane 0.9
+'
+prep -design picorv32a
+
+#Now that the design is prepped and ready, we can run synthesis 
+run_synthesis
+
+# Now we can run floorplan
+run_floorplan
+```
+
+**2. Find the die area from the floorplan def**
+
+Area of die in microns = Die width in microns * die height in microns 1000 Unit Distance = 1 Micron Die width in unit Distance = 660685 - 0 = 660685 Die height in unit Distance =671405 - 0 = 671405 Distance in microns = Value in unit Distance / 1000 Die width in microns = 660685 / 1000 = 660.685 Microns Die height in microns = 671405 / 1000 = 671.405 Microns Area of Die in microns = 660.685 × 671.405 = 443587.212425 Square Microns
+
+**3.Load generated floorplan def in magic tool**
+
+```tcl
+# Change directory to path containing generated floorplan def
+cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/17-03_12-06/results/floorplan/
+
+# Command to load the floorplan def in magic tool
+magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.floorplan.def &
+```
+**4.Run 'picorv32a' design congestion aware placement using OpenLANE flow and generate necessary outputs**
+
+```tcl
+# Congestion aware placement by default
+run_placement
+```
+
+**5.Load generated placement def in magic tool and explore the placement.**
+
+```tcl
+# Change directory to path containing generated placement def
+cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/17-03_12-06/results/placement/
+
+# Command to load the placement def in magic tool
+magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.placement.def &
+```
+
+### Cell design and Characterization flow
+
+Thus, After final placement and routing for the above netlist the final die will be represented as shown.
+It consists of standard cells that are stored in the Library. The library consists of various varities of std. cells of different sizes and different functionality.
+
+Steps of Characterisation Flow:-
+
+1. Reading of SPICE module files
+2. Reading of netlist extracted by SPICE
+3. Recognising buffer behaviour
+4. Reading subcircuits
+5. Attaching neccessary power sources
+6. Applying stimulus
+7. Provide neccessary output capacitance
+8. Provide simulation command like .tran for transient simulation or .dc for DC simulation.
+   
+These steps are given to atool called GUNA in the form of a configuration file, which runs simulations and will generate timing, noise and power models in the form of .libs files.
+
+## DAY 3
+### Design Library Cell Using Magic Layout and NGSPICE characterisation
+
+
+
+
+
+
+
+
+
+
+
+
