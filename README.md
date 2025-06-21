@@ -1,4 +1,4 @@
-# Digital VLSI SoC Design and Planning 
+![image](https://github.com/user-attachments/assets/308ded4a-f833-4a45-809f-3ed91b4e15e6)![image](https://github.com/user-attachments/assets/9cb63697-7306-4775-8753-e1b700cb9c10)![image](https://github.com/user-attachments/assets/649226d2-eedf-44f3-b55d-8829bb865536)# Digital VLSI SoC Design and Planning 
 
 ## DAY 1
 ### Introduction to QFN-48 Package, chip, pads, core, die and IPs
@@ -29,7 +29,10 @@ Together, these components help in designing an efficient, reliable, and reusabl
 
 ### Introduction to RISC-V
 ---
-RISC-V is an open-standard Instruction Set Architecture (ISA) based on the principles of Reduced Instruction Set Computing (RISC). Unlike proprietary ISAs like ARM or x86, RISC-V is free to use, allowing individuals, companies, and universities to design and build their own processors without licensing fees. In hardware, the chip is connected to its package using bond wires.
+RISC-V is an open-standard Instruction Set Architecture (ISA) based on the principles of Reduced Instruction Set Computing (RISC).A C program which has to be run on a specific hardware layout which is the interior of a chip in your laptop, there is certain flow to be followed. Initially, this particular C program is compiled in it's assembly language program which is nothing but RISC-V ISA (Reduced Instruction Set Compting - V Intruction Set Architecture).Following this, the assembly language program is then converted to machine language program which is the binary language logic 0 and 1 which is understood by the hardware of the computer.Directly after this, we've to implement this RISC-V specification using some RTL (a Hardware Description Language). Finally, from the RTL to Layout it is a standard PnR or RTL to GDSII flow. 
+
+Unlike proprietary ISAs like ARM or x86, RISC-V is free to use, allowing individuals, companies, and universities to design and build their own processors without licensing fees. In hardware, the chip is connected to its package using bond wires.
+![](image/3.png)
 
 ### From Software Applications to Hardware
 ---
@@ -41,7 +44,10 @@ System software handles the translation process in the following steps:
 2. Compilers: Compilers take the high-level source code (e.g., C/C++) and convert it into lower-level machine instructions suited for the hardware. These instructions are architecture-specific and are often referred to as ISAs (Instruction Set Architectures). The output is usually an executable file (e.g., .exe) that is passed to the assembler.
 3. Assemblers: Assemblers translate the compiler-generated instructions into binary machine code. This binary code is what the hardware finally executes.
    
-(imagr)
+![](image/8.png)
+
+![](image/9.png)
+
 In the image above shows Stopwatch App as an example. A C program is written to implement the stopwatch functionality. Here's how it's executed step by step:
 1. The program is compiled by the system (e.g., Windows/Linux) into machine instructions.
 2. These instructions are then translated into RISC-V assembly code.
@@ -50,10 +56,20 @@ In the image above shows Stopwatch App as an example. A C program is written to 
 5. RTL is synthesized into a netlist, which describes the circuit connections.
 6. Finally, the netlist is turned into a chip layout during physical design, producing real, functioning hardware capable of running the stopwatch.
 
+There are mainly 3 different parts in this course. They are:
+* RISC-V ISA
+* RTL and synthesis of RISC-V based CPU core - picorv32
+* Physical design implementation of picorv32
+
+![](image/10.png)
+
 ### SoC Design and OpenLANE
 ---
+
+![](image/4.png)
+
 This image illustrates the open-source digital ASIC (Application-Specific Integrated Circuit) design flow, using freely available tools, design files, and manufacturing data provided by the open-source community.
-At the center of this process is the ASIC, created through a combination of:
+For open-source ASIC design implemantation, we require the following enablers to be readily available as open-source versions. They are:-
 * EDA Tools (Electronic Design Automation):These tools, like QFlow, OpenROAD, and OpenLane, are used for designing, simulating, and verifying digital circuits and PCBs.
 * RTL Designs (Register Transfer Level): These are digital design files written in hardware description languages such as Verilog or VHDL. They define how a circuit should function. RTLs are commonly sourced from open platforms like librecores.org, opencores.org, or GitHub.
 * PDK Data (Process Design Kits): A PDK is a set of files provided by a semiconductor foundry to model the physical fabrication process. It includes: Design Rules (DRC), Device Models, Standard Cell Libraries (digital logic), I/O Libraries
@@ -63,6 +79,9 @@ A notable example is the 130nm open-source PDK released by SkyWater and Google, 
 ### Simplified RTL2GDS flow
 ---
 The RTL to GDSII flow is the process that transforms a high-level hardware design (usually written in Verilog or VHDL) into a physical layout file (GDSII) ready for chip manufacturing. This flow involves multiple steps, each crucial for ensuring that the final design is functionally correct, physically manufacturable, and electrically reliable.
+
+![](image/11.png)
+
 1. Synthesis : Converts RTL (Register Transfer Level) code into a gate-level netlist using logic gates from a Standard Cell Library (SCL).
 * Each standard cell has predefined models for behavior and layout.
 * This step translates high-level descriptions into real, placeable logic components.
@@ -94,6 +113,7 @@ For open-source ASIC projects, the SkyWater 130nm PDK enables designers to go fr
 
 ### Introduction to OpenLane and detailed ASIC design FLOW
 ---
+![](image/12.png)
 OpenLane is an open-source digital ASIC design flow built on top of tools like Yosys, OpenROAD, Magic, and Netgen. It streamlines the RTL-to-GDSII process and adds utilities for design exploration, testing, and verification. Key stages:
 1. Synthesis Exploration
    * it generates a delay vs area report
@@ -109,6 +129,7 @@ OpenLane is an open-source digital ASIC design flow built on top of tools like Y
 4. Design for Test (also k/a DFT)
    * Adds features to the chip to allow post-fabrication testing. Includes: Scan insertion, Automatic Test Pattern Generation (ATPG), Fault simulation, Pattern compaction, Fault coverage analysis
    * Ensures defects can be identified in real silicon.
+![](image/13.png)
 
 After DFT, physical implementation is done using the OpenROAD tools. The major steps include floor and power planning, adding decoupling capacitors and tap cells, global and detailed placement of components, post-placement optimization, clock tree synthesis (CTS), and global and detailed routing. These steps physically arrange and connect the circuit on the chip. 
 
@@ -121,6 +142,9 @@ Since CTS and post placement optimization change the netlist, it is important to
    * Verifies that metal interconnects don’t accumulate dangerous charge during fabrication.
    * If violations exist, antenna diodes or rerouting are applied
    * OpenLANE uses a preventive method by placing fake antenna diode cells next to every cell input after placement. If the antenna checker detects a real violation, these fake diodes are replaced with actual diode cells.
+![](image/14.png)
+![](image/15.png)
+
 7. Timing Analysis (STA)
    * Uses the synthesized netlist and other physical data to verify timing constraints.
    * Ensures setup and hold times are met for all paths.
@@ -140,6 +164,8 @@ The Path for the current working directory:
 ```
 vsduser@vsdsquadron:~/Desktop/work/tools/openlane_workshop_dir/openlane$
 ```
+![](image/14.png)
+
 To open Openlane, we can use the docker command using interactive. After invoking the docker command, the prompt changes to bash-4.2$
 
 ```
