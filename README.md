@@ -32,6 +32,7 @@ Together, these components help in designing an efficient, reliable, and reusabl
 RISC-V is an open-standard Instruction Set Architecture (ISA) based on the principles of Reduced Instruction Set Computing (RISC).A C program which has to be run on a specific hardware layout which is the interior of a chip in your laptop, there is certain flow to be followed. Initially, this particular C program is compiled in it's assembly language program which is nothing but RISC-V ISA (Reduced Instruction Set Compting - V Intruction Set Architecture).Following this, the assembly language program is then converted to machine language program which is the binary language logic 0 and 1 which is understood by the hardware of the computer.Directly after this, we've to implement this RISC-V specification using some RTL (a Hardware Description Language). Finally, from the RTL to Layout it is a standard PnR or RTL to GDSII flow. 
 
 Unlike proprietary ISAs like ARM or x86, RISC-V is free to use, allowing individuals, companies, and universities to design and build their own processors without licensing fees. In hardware, the chip is connected to its package using bond wires.
+
 ![](image/3.png)
 
 ### From Software Applications to Hardware
@@ -43,10 +44,10 @@ System software handles the translation process in the following steps:
 1. Operating Systems (OS): The OS manages hardware resources and performs essential tasks like input/output operations, memory management, and low-level system functions. It also interacts with the application software and sends code to the compiler for translation.
 2. Compilers: Compilers take the high-level source code (e.g., C/C++) and convert it into lower-level machine instructions suited for the hardware. These instructions are architecture-specific and are often referred to as ISAs (Instruction Set Architectures). The output is usually an executable file (e.g., .exe) that is passed to the assembler.
 3. Assemblers: Assemblers translate the compiler-generated instructions into binary machine code. This binary code is what the hardware finally executes.
-   
-![](image/8.png)
+  
+![](image/8.1.png)
 
-![](image/9.png)
+![](image/8.png)
 
 In the image above shows Stopwatch App as an example. A C program is written to implement the stopwatch functionality. Here's how it's executed step by step:
 1. The program is compiled by the system (e.g., Windows/Linux) into machine instructions.
@@ -61,7 +62,7 @@ There are mainly 3 different parts in this course. They are:
 * RTL and synthesis of RISC-V based CPU core - picorv32
 * Physical design implementation of picorv32
 
-![](image/10.png)
+![](image/9.png)
 
 ### SoC Design and OpenLANE
 ---
@@ -80,7 +81,7 @@ A notable example is the 130nm open-source PDK released by SkyWater and Google, 
 ---
 The RTL to GDSII flow is the process that transforms a high-level hardware design (usually written in Verilog or VHDL) into a physical layout file (GDSII) ready for chip manufacturing. This flow involves multiple steps, each crucial for ensuring that the final design is functionally correct, physically manufacturable, and electrically reliable.
 
-![](image/11.png)
+![](image/10.png)
 
 1. Synthesis : Converts RTL (Register Transfer Level) code into a gate-level netlist using logic gates from a Standard Cell Library (SCL).
 * Each standard cell has predefined models for behavior and layout.
@@ -129,7 +130,7 @@ OpenLane is an open-source digital ASIC design flow built on top of tools like Y
 4. Design for Test (also k/a DFT)
    * Adds features to the chip to allow post-fabrication testing. Includes: Scan insertion, Automatic Test Pattern Generation (ATPG), Fault simulation, Pattern compaction, Fault coverage analysis
    * Ensures defects can be identified in real silicon.
-![](image/13.png)
+![](image/11.png)
 
 After DFT, physical implementation is done using the OpenROAD tools. The major steps include floor and power planning, adding decoupling capacitors and tap cells, global and detailed placement of components, post-placement optimization, clock tree synthesis (CTS), and global and detailed routing. These steps physically arrange and connect the circuit on the chip. 
 
@@ -142,8 +143,8 @@ Since CTS and post placement optimization change the netlist, it is important to
    * Verifies that metal interconnects don’t accumulate dangerous charge during fabrication.
    * If violations exist, antenna diodes or rerouting are applied
    * OpenLANE uses a preventive method by placing fake antenna diode cells next to every cell input after placement. If the antenna checker detects a real violation, these fake diodes are replaced with actual diode cells.
-![](image/14.png)
-![](image/15.png)
+![](image/12.png)
+![](image/13.png)
 
 7. Timing Analysis (STA)
    * Uses the synthesized netlist and other physical data to verify timing constraints.
