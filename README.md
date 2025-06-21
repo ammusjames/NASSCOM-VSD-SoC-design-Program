@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/308ded4a-f833-4a45-809f-3ed91b4e15e6)![image](https://github.com/user-attachments/assets/9cb63697-7306-4775-8753-e1b700cb9c10)![image](https://github.com/user-attachments/assets/649226d2-eedf-44f3-b55d-8829bb865536)# Digital VLSI SoC Design and Planning 
+Digital VLSI SoC Design and Planning 
 
 ## DAY 1
 ### Introduction to QFN-48 Package, chip, pads, core, die and IPs
