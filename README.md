@@ -3,16 +3,21 @@
 ## DAY 1
 ### Introduction to QFN-48 Package, chip, pads, core, die and IPs
 
-(image)
+In any embedded board we have seen, the part of the board we consider as the chip is only the PACKAGE of the chip which is nothing but a protective layer or packet bound over the actual chip and the actual manufatured chip is usually present at the center of a package wherein, the connections from package is fed to the chip by WIRE BOUND method which is none other than basic wired connection
+
+![](image/7.png)
 
 The diagram below illustrates a block-level architecture of a Processor or System on Chip (SoC) along with its interfacing components. It highlights the pinout layout and shows how various peripherals connect to the SoC. This is a typical example of an SoC interface, commonly used in embedded system design. It shows how communication interfaces like I2C, UART as well as memory units. It also includes power and ground connections.In technical term the processor with all components is called a PACKAGE. One kind of package, which is used in the arduino board is a QFN - 48 package (Quad Flat No-Leads).
 
-(image)
+![](image/1.png)
+
 A chip is actually inside a package, and is connected to various "PINS" or inputs/outputs.
 components of chip are:
 1. pads : Pads serve as the connection points between the integrated circuit and the external chip package. These small structures are responsible for transmitting electrical signals into and out of the chip. They are carefully designed and positioned to align with the package pins.
 2. core : The core is where the digital logic resides. It includes all the fundamental building blocks like AND, OR, XOR gates, multiplexers (MUXes), and more. This is the heart of the chip—responsible for executing all processor functions.
 3. die : A die is a single piece cut from a larger semiconductor wafer. It can function independently and often contains one or more cores. Each die represents a complete, functional unit ready to be packaged or integrated into devices.
+
+![](image/6.png)
 
 Inside the core, there are two main types of reusable components:
 
@@ -568,7 +573,7 @@ Noting down current design values generated before modifying parameters to impro
 Commands to view and change parameters to improve timing and run synthesis
 ```
 # Now once again we have to prep design so as to update variables
-prep -design picorv32a -tag 24-03_10-03 -overwrite
+prep -design picorv32a -tag **_10-03** -overwrite
 
 # Addiitional commands to include newly added lef to openlane flow merged.lef
 set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
@@ -621,7 +626,7 @@ run_placement
 Commands to load placement def in magic in another terminal
 ```
 # Change directory to path containing generated placement def
-cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/24-03_10-03/results/placement/
+cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/16-05_10-03/results/placement/
 
 # Command to load the placement def in magic tool
 magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.placement.def &
@@ -676,7 +681,7 @@ Since more fanout is causing more delay we can add parameter to reduce fanout an
 Commands to include new lef and perform synthesis
 ```
 # Now the OpenLANE flow is ready to run any design and initially we have to prep the design creating some necessary files and directories for running a specific design which in our case is 'picorv32a'
-prep -design picorv32a -tag 25-03_18-52 -overwrite
+prep -design picorv32a -tag 16-05_18-52 -overwrite
 
 # Adiitional commands to include newly added lef to openlane flow
 set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
@@ -772,7 +777,7 @@ Now to insert this updated netlist to PnR flow and we can use write_verilog and 
 Commands to make copy of netlist
 ```
 # Change from home directory to synthesis results directory
-cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/25-03_18-52/results/synthesis/
+cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/16-05_18-52/results/synthesis/
 
 # List contents of the directory
 ls
@@ -790,7 +795,7 @@ Commands to write verilog
 help write_verilog
 
 # Overwriting current synthesis netlist
-write_verilog /home/vsduser/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/25-03_18-52/results/synthesis/picorv32a.synthesis.v
+write_verilog /home/vsduser/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/16-05_18-52/results/synthesis/picorv32a.synthesis.v
 
 # Exit from OpenSTA since timing analysis is done
 exit
@@ -839,10 +844,10 @@ Commands to be run in OpenLANE flow to do OpenROAD timing analysis with integrat
 openroad
 
 # Reading lef file
-read_lef /openLANE_flow/designs/picorv32a/runs/24-03_10-03/tmp/merged.lef
+read_lef /openLANE_flow/designs/picorv32a/runs/17-03_10-03/tmp/merged.lef
 
 # Reading def file
-read_def /openLANE_flow/designs/picorv32a/runs/24-03_10-03/results/cts/picorv32a.cts.def
+read_def /openLANE_flow/designs/picorv32a/runs/17-03_10-03/results/cts/picorv32a.cts.def
 
 # Creating an OpenROAD database to work with
 write_db pico_cts.db
@@ -851,7 +856,7 @@ write_db pico_cts.db
 read_db pico_cts.db
 
 # Read netlist post CTS
-read_verilog /openLANE_flow/designs/picorv32a/runs/24-03_10-03/results/synthesis/picorv32a.synthesis_cts.v
+read_verilog /openLANE_flow/designs/picorv32a/runs/17-05_10-03/results/synthesis/picorv32a.synthesis_cts.v
 
 # Read library for design
 read_liberty $::env(LIB_SYNTH_COMPLETE)
@@ -892,7 +897,7 @@ echo $::env(CTS_CLK_BUFFER_LIST)
 echo $::env(CURRENT_DEF)
 
 # Setting def as placement def
-set ::env(CURRENT_DEF) /openLANE_flow/designs/picorv32a/runs/24-03_10-03/results/placement/picorv32a.placement.def
+set ::env(CURRENT_DEF) /openLANE_flow/designs/picorv32a/runs/17-05_10-03/results/placement/picorv32a.placement.def
 
 # Run CTS again
 run_cts
@@ -904,10 +909,10 @@ echo $::env(CTS_CLK_BUFFER_LIST)
 openroad
 
 # Reading lef file
-read_lef /openLANE_flow/designs/picorv32a/runs/24-03_10-03/tmp/merged.lef
+read_lef /openLANE_flow/designs/picorv32a/runs/17-035_10-03/tmp/merged.lef
 
 # Reading def file
-read_def /openLANE_flow/designs/picorv32a/runs/24-03_10-03/results/cts/picorv32a.cts.def
+read_def /openLANE_flow/designs/picorv32a/runs/17-05_10-03/results/cts/picorv32a.cts.def
 
 # Creating an OpenROAD database to work with
 write_db pico_cts1.db
@@ -916,7 +921,7 @@ write_db pico_cts1.db
 read_db pico_cts.db
 
 # Read netlist post CTS
-read_verilog /openLANE_flow/designs/picorv32a/runs/24-03_10-03/results/synthesis/picorv32a.synthesis_cts.v
+read_verilog /openLANE_flow/designs/picorv32a/runs/17-05_10-03/results/synthesis/picorv32a.synthesis_cts.v
 
 # Read library for design
 read_liberty $::env(LIB_SYNTH_COMPLETE)
@@ -1009,7 +1014,7 @@ gen_pdn
 Commands to load PDN def in magic in another terminal
 ```
 # Change directory to path containing generated PDN def
-cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/26-03_08-45/tmp/floorplan/
+cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/17-05_08-45/tmp/floorplan/
 
 # Command to load the PDN def in magic tool
 magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read 14-pdn.def &
@@ -1030,7 +1035,7 @@ run_routing
 Commands to load routed def in magic in another terminal
 ```
 # Change directory to path containing routed def
-cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/26-03_08-45/results/routing/
+cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/17-05_08-45/results/routing/
 
 # Command to load the routed def in magic tool
 magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.def &
@@ -1043,7 +1048,7 @@ Commands for SPEF extraction using external tool
 cd Desktop/work/tools/SPEF_EXTRACTOR
 
 # Command extract spef
-python3 main.py /home/vsduser/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/26-03_08-45/tmp/merged.lef /home/vsduser/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/26-03_08-45/results/routing/picorv32a.def
+python3 main.py /home/vsduser/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/17-05_08-45/tmp/merged.lef /home/vsduser/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/17-05_08-45/results/routing/picorv32a.def
 ```
 4. Post-Route OpenSTA timing analysis with the extracted parasitics of the route.
 Commands to be run in OpenLANE flow to do OpenROAD timing analysis with integrated OpenSTA in OpenROAD
@@ -1053,10 +1058,10 @@ Commands to be run in OpenLANE flow to do OpenROAD timing analysis with integrat
 openroad
 
 # Reading lef file
-read_lef /openLANE_flow/designs/picorv32a/runs/26-03_08-45/tmp/merged.lef
+read_lef /openLANE_flow/designs/picorv32a/runs/17-05_08-45/tmp/merged.lef
 
 # Reading def file
-read_def /openLANE_flow/designs/picorv32a/runs/26-03_08-45/results/routing/picorv32a.def
+read_def /openLANE_flow/designs/picorv32a/runs/17-05_08-45/results/routing/picorv32a.def
 
 # Creating an OpenROAD database to work with
 write_db pico_route.db
@@ -1065,7 +1070,7 @@ write_db pico_route.db
 read_db pico_route.db
 
 # Read netlist post CTS
-read_verilog /openLANE_flow/designs/picorv32a/runs/26-03_08-45/results/synthesis/picorv32a.synthesis_preroute.v
+read_verilog /openLANE_flow/designs/picorv32a/runs/17-05_08-45/results/synthesis/picorv32a.synthesis_preroute.v
 
 # Read library for design
 read_liberty $::env(LIB_SYNTH_COMPLETE)
@@ -1080,7 +1085,7 @@ read_sdc /openLANE_flow/designs/picorv32a/src/my_base.sdc
 set_propagated_clock [all_clocks]
 
 # Read SPEF
-read_spef /openLANE_flow/designs/picorv32a/runs/26-03_08-45/results/routing/picorv32a.spef
+read_spef /openLANE_flow/designs/picorv32a/runs/17-05_08-45/results/routing/picorv32a.spef
 
 # Generating custom timing report
 report_checks -path_delay min_max -fields {slew trans net cap input_pins} -format full_clock_expanded -digits 4
