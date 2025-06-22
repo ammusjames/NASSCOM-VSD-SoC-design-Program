@@ -188,6 +188,8 @@ run_synthesis
 # Exit OpenLANE
 exit
 ```
+![](image/15.png)
+
 **2. Calculate the flop ratio**
 
 Calculation of Flop Ratio and DFF % from synthesis statistics report file
@@ -196,18 +198,28 @@ Calculation of Flop Ratio and DFF % from synthesis statistics report file
 
 *Percentage of DFF's = 0.10842 * 100 = 10.84296 %*
 
+![](image/16.png)
+
 --------
 ## DAY 2
 ### Good floorplan vs bad floorplan and introduction to library cells
 
-Netlist describes the connectivity between all the Electronic components. Below, represents the netlisting of the various Flip-Flops and logic gates.These needs to be converted to specified physical dimensions for placing inside the core. [2.1] 
+Netlist describes the connectivity between all the Electronic components. Below, represents the netlisting of the various Flip-Flops and logic gates.These needs to be converted to specified physical dimensions for placing inside the core.
 
+![](image/17.png)
+![](image/18.png)
+
+![](image/20.png)
+![](image/34.png)
 
 Consider both standard cells and FF has 1 unit height and width so there area is 1 sq unit.Next calculate area occupied by the netlist on a silicon wafer. Thus since 4 gates/flip-flops here, the total size of the silicon wafer will 4 sq. units.
 
 Core is defined as the section of the chip where the fundamental logic of the design is placed. Die consists of core, it is a small semiconductor material specimen on which the fundamental circuit is fabricated.
 
 Utilisation factor is the Area occupied by netlist / Total area of core. If the logical cells occupy the core fully, it is known as 100% utilisation. Aspect Ratio is the ratio between height and width. If the chip is square - it is 1, else the chip is rectangular in shape.
+
+![](image/21.png)
+
 For eg. in the fig above:
 
 Utilisation factor = 50 %
@@ -220,21 +232,52 @@ Pre-Placed cells are complex logic blocks that can be reused. They are already i
 
 For this first we divide the logic into blocks - while preserving the connectivity of the logic. By extending IO pins and making connections we can convert the logic into two parts that can be used as needed elsewhere in the design if needed. The various preplaced blocks available include memory, clock-gating cell, comparator, MUX.
 
+![](image/35.png)
+![](image/36.png)
+
+![](image/22.png)
+
+how do we find locations of preplaced cells. Lets say we have block a,b,c.so they arranged in a fashion that:
+
+![](image/37.png)
+
+1.IPs act as macros, often communicating with input/output (I/P) pins.
+
+2.They should be placed close to the I/P side and in a way that their locations cannot be changed.
+
+3.They should not touch any ecbores and their local areas should be well-defined.
+
+4.Decoupling capacitors should surround them.
+
 Thus Floorplanning is the arrangement of these IPs onto the chip.
 
 ### Decoupling Capacitor
 
 Decoupling capacitors are placed locally around the pre-placed cells. The decoupling capacitor is a large capacitor completely full of charge whose voltage is equivalent to the power supply. When many gates switch at the same time, the power supply may not respond quickly enough, leading to voltage drops or noise on the power lines. This unstable power can cause incorrect logic behavior or timing issues in the chip. During switching activity the decoupling capacitor decouples the circuit from the main supply and provides the necessary voltage required by the pre placed cells. 
 
+![](image/25.png)
+![](image/24.png)
+![](image/26.png)
+
+In chip design, a decoupling capacitor is needed to ensure a stable and clean power supply to the internal circuits. When many transistors switch at once, they draw a sudden burst of current, which can cause voltage fluctuations or noise on the power lines. A decoupling capacitor helps by temporarily supplying this needed current, reducing voltage dips and filtering out noise. It acts like a small energy reservoir placed close to the logic cells, ensuring the chip functions reliably even during high switching activity. Without decoupling capacitors, the chip may experience timing errors or even malfunction due to unstable power.
+
+![](image/27.png)
+
 ### Power Planning
 
 As all coupling capacitors present in the circuit demands the power suppy simultaneosly a single power supply cannot adhere to the demands which reult in noise in the circuit cause due to voltage groop or ground bounce. Hence, power planning is very important part of floor planning. During this stage mulltiple power supply are placed in a chip for proper fuctioning. One structure for the power planning is the mseh structure where multiple power and groud lines are arrange in horizontal abd vertical manner as shown in figure below.
+
+![](image/28.png)
 
 ### Pin placement
 
 For proper pin placement the connectivity information coded using verilog/vhdl language called netlist is considered. The location of input and output pin depensd upon the conncetivity requirement and the designer. However, the basic trend is to select a location which results in reduce connectivity length. Optimal pin placement is done taking care about the less buffering and less amount of power consumption. The size of the clock pins are wider as compared to the other data pins. The locgiical cell blockage is done to make sure that the automated PnR does not used the are for placement of cells.
 
+![](image/30.png)
+
 Thus the complete deign is:
+
+![](image/31.png)
 
 ## LAB DAY 2
 
@@ -256,7 +299,21 @@ run_floorplan
 
 **2. Find the die area from the floorplan def**
 
-Area of die in microns = Die width in microns * die height in microns 1000 Unit Distance = 1 Micron Die width in unit Distance = 660685 - 0 = 660685 Die height in unit Distance =671405 - 0 = 671405 Distance in microns = Value in unit Distance / 1000 Die width in microns = 660685 / 1000 = 660.685 Microns Die height in microns = 671405 / 1000 = 671.405 Microns Area of Die in microns = 660.685 × 671.405 = 443587.212425 Square Microns
+Area of die in microns = Die width in microns * die height in microns
+
+1000 Unit Distance = 1 Micron 
+
+Die width in unit Distance = 660685 - 0 = 660685
+
+Die height in unit Distance = 671405 - 0 = 671405 
+
+Distance in microns = Value in unit Distance / 1000 
+
+Die width in microns = 660685 / 1000 = 660.685 Microns
+
+Die height in microns = 671405 / 1000 = 671.405 Microns
+
+Area of Die in microns = 660.685 × 671.405 = 443587.212425 Square Microns
 
 **3.Load generated floorplan def in magic tool**
 
