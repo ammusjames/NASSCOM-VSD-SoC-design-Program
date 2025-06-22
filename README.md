@@ -287,7 +287,7 @@ Thus the complete deign is:
 bash-4.2$ flow.tcl -interactive
 
 package require openlane 0.9
-'
+
 prep -design picorv32a
 
 #Now that the design is prepped and ready, we can run synthesis 
@@ -296,8 +296,11 @@ run_synthesis
 # Now we can run floorplan
 run_floorplan
 ```
+![](image/38.png)
 
 **2. Find the die area from the floorplan def**
+
+![](image/39.png)
 
 Area of die in microns = Die width in microns * die height in microns
 
@@ -324,12 +327,19 @@ cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/17-03
 # Command to load the floorplan def in magic tool
 magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.floorplan.def &
 ```
+![](image/40.png)
+
+Equidistant placement of ports
+![](image/41.png)
+
 **4.Run 'picorv32a' design congestion aware placement using OpenLANE flow and generate necessary outputs**
 
 ```tcl
 # Congestion aware placement by default
 run_placement
 ```
+![](image/42.png)
+![](image/43.png)
 
 **5.Load generated placement def in magic tool and explore the placement.**
 
@@ -340,11 +350,14 @@ cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/17-03
 # Command to load the placement def in magic tool
 magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.placement.def &
 ```
+![](image/44.png)
 
 ### Cell design and Characterization flow
 
 Thus, After final placement and routing for the above netlist the final die will be represented as shown.
 It consists of standard cells that are stored in the Library. The library consists of various varities of std. cells of different sizes and different functionality.
+
+![](image/45.png)
 
 Steps of Characterisation Flow:-
 
@@ -382,86 +395,108 @@ Then, place the following commands in the interactive window and check the layou
 OpenLANE configurations can be changed inside the shell itself, on the fly. IO Mode is usually set to random equidistant. However, if we want to change this, we can do so through the following command typed after floorplan : set ::env(FP_IO_MODE) 2. After running this command, the IO pins will not be equidistant in mode 2 (instead of the default - that is 1).
 
 2. Clone custom inverter standard cell design from github repository
-   ``` tcl
-   # Change directory to openlane
-   cd Desktop/work/tools/openlane_working_dir/openlane
 
-   # Clone the repository with custom inverter design
-   git clone https://github.com/nickson-jose/vsdstdcelldesign
+``` tcl
+# Change directory to openlane
+cd Desktop/work/tools/openlane_working_dir/openlane
 
-   # Change into repository directory
-   cd vsdstdcelldesign
+# Clone the repository with custom inverter design
+git clone https://github.com/nickson-jose/vsdstdcelldesign
 
-   # Copy magic tech file to the repo directory for easy access
-   cp /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech .
-   # Check contents whether everything is present
-   ls
+# Change into repository directory
+cd vsdstdcelldesign
 
-   # Command to open custom inverter layout in magic
-   magic -T sky130A.tech sky130_inv.mag &
-   
-   ```
+# Copy magic tech file to the repo directory for easy access
+cp /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech .
+
+# Check contents whether everything is present
+ls
+
+# Command to open custom inverter layout in magic
+magic -T sky130A.tech sky130_inv.mag &
+```
+![](image/46.png)
+
+Screenshot of custom inverter layout in magic
+![](image/47.png)
+
+NMOS and PMOS identified
+![](image/48.png)
+![](image/49.png)
+
+NMOS source connectivity to VSS (here VGND) and VDD verified
+![](image/50.png)
+![](image/51.png)
+
 3. The SPICE deck contains connectivity information about netlists, inputs to be provided. Commands for spice extraction of the custom inverter layout to be used in tkcon window of magic.
-   ```tcl
-   # Extraction command to extract to .ext format
-   extract all
 
-   # Before converting ext to spice this command enable the parasitic extraction also
-   ext2spice cthresh 0 rthresh 0
+```tcl
+# Extraction command to extract to .ext format
+extract all
 
-   # Converting to ext to spice
-   ext2spice
-   
-   ```
+# Before converting ext to spice this command enable the parasitic extraction also
+ext2spice cthresh 0 rthresh 0
 
-   4. Post-layout ngspice simulations.
+# Converting to ext to spice
+ext2spice
+```
+Thus, the spice file is created and shown below.
+![](image/54.png)
 
-      Commands for ngspice simulation
-      ```tcl
-      # Command to directly load spice file for simulation to ngspice
-      ngspice sky130_inv.spice
+Now, open the spice file using the following command.
+```
+vim sky130_inv.spice
+```
+![](image/56.png)
+
+4. Post-layout ngspice simulations.
+
+Commands for ngspice simulation
+```tcl
+# Command to directly load spice file for simulation to ngspice
+ngspice sky130_inv.spice
       
-      # Now that we have entered ngspice with the simulation spice file loaded we just have to load the plot
-      plot y vs time a
+# Now that we have entered ngspice with the simulation spice file loaded we just have to load the plot
+plot y vs time a
 
-      ```
-      Screenshot of generated plot
+```
+Screenshot of generated plot
 
-      Rise transition time calculation:
+Rise transition time calculation:
 
-      Rise Transition Time = Time taken for output to rise to 80% - Time taken for output to rise to rise to 20%
+Rise Transition Time = Time taken for output to rise to 80% - Time taken for output to rise to rise to 20%
 
-      20 % of output = 660mV
+20 % of output = 660mV
 
-      80% of output = 2.64V
+80% of output = 2.64V
 
-      Rise transition Time = 2.24638 – 2.18242 = 0,06396 ns = 63.96 ps
+Rise transition Time = 2.24638 – 2.18242 = 0,06396 ns = 63.96 ps
 
-      Fall Transition Time Calculation
+Fall Transition Time Calculation
 
-      Fall Transition Time = Time taken for output to fall to 20% - Time taken for output to fall to 80%
+Fall Transition Time = Time taken for output to fall to 20% - Time taken for output to fall to 80%
 
-      20 % of output = 660mV
+20 % of output = 660mV
 
-      80% of output = 2.64V
+80% of output = 2.64V
 
-      Fall Transition Time = 4.0955 – 4.0536 = 0.0419 ns = 41.9 ps
+Fall Transition Time = 4.0955 – 4.0536 = 0.0419 ns = 41.9 ps
 
-      Rise Cell Delay Calculation:
+Rise Cell Delay Calculation:
 
-      Rise Cell Delay = Time taken for output to rise to 50 % - Time taken for input to fall to 50%
+Rise Cell Delay = Time taken for output to rise to 50 % - Time taken for input to fall to 50%
 
-      50 % of 3.3 V = 1.65 V
+50 % of 3.3 V = 1.65 V
 
-      Rise Cell Delay = 2.2144 – 2.15008 = 0.06136 ns = 61.36 ps
+Rise Cell Delay = 2.2144 – 2.15008 = 0.06136 ns = 61.36 ps
 
-      Fall Cell Delay Calculation:
+Fall Cell Delay Calculation:
 
-      Fall Cell Delay = Time Taken For Output to Fall to 50% - Time taken for input to rise to 50 %
+Fall Cell Delay = Time Taken For Output to Fall to 50% - Time taken for input to rise to 50 %
 
-      50 % of 3.3V = 1.65 V
+50 % of 3.3V = 1.65 V
 
-      Fall Cell Delay = 4.07 – 4.05 = 0.02 ns = 20 ps
+Fall Cell Delay = 4.07 – 4.05 = 0.02 ns = 20 ps
 
 5. Find problem in the DRC section of the old magic tech file for the skywater process and fix them
 
