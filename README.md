@@ -455,14 +455,17 @@ Commands for ngspice simulation
 ```tcl
 # Command to directly load spice file for simulation to ngspice
 ngspice sky130_inv.spice
-      
+```
+
+
+```
 # Now that we have entered ngspice with the simulation spice file loaded we just have to load the plot
 plot y vs time a
 
 ```
 Screenshot of generated plot
 
-Rise transition time calculation:
+**Rise transition time calculation:**
 
 Rise Transition Time = Time taken for output to rise to 80% - Time taken for output to rise to rise to 20%
 
@@ -472,7 +475,7 @@ Rise Transition Time = Time taken for output to rise to 80% - Time taken for out
 
 Rise transition Time = 2.24638 – 2.18242 = 0,06396 ns = 63.96 ps
 
-Fall Transition Time Calculation
+**Fall Transition Time Calculation:**
 
 Fall Transition Time = Time taken for output to fall to 20% - Time taken for output to fall to 80%
 
@@ -482,7 +485,7 @@ Fall Transition Time = Time taken for output to fall to 20% - Time taken for out
 
 Fall Transition Time = 4.0955 – 4.0536 = 0.0419 ns = 41.9 ps
 
-Rise Cell Delay Calculation:
+**Rise Cell Delay Calculation:**
 
 Rise Cell Delay = Time taken for output to rise to 50 % - Time taken for input to fall to 50%
 
@@ -490,7 +493,7 @@ Rise Cell Delay = Time taken for output to rise to 50 % - Time taken for input t
 
 Rise Cell Delay = 2.2144 – 2.15008 = 0.06136 ns = 61.36 ps
 
-Fall Cell Delay Calculation:
+**Fall Cell Delay Calculation:**
 
 Fall Cell Delay = Time Taken For Output to Fall to 50% - Time taken for input to rise to 50 %
 
@@ -1081,21 +1084,18 @@ echo $::env(CTS_CLK_BUFFER_LIST)
 ## Final steps for RTL2GDS using tritonRoute and openSTA 
 
 1. Perform generation of Power Distribution Network (PDN) and explore the PDN layout.
-Commands to perform all necessary stages up until now
+   
+Commands to perform :
 ```
 # Change directory to openlane flow directory
 cd Desktop/work/tools/openlane_working_dir/openlane
 
-# alias docker='docker run -it -v $(pwd):/openLANE_flow -v $PDK_ROOT:$PDK_ROOT -e PDK_ROOT=$PDK_ROOT -u $(id -u $USER):$(id -g $USER) efabless/openlane:v0.21'
-# Since we have aliased the long command to 'docker' we can invoke the OpenLANE flow docker sub-system by just running this command
 docker
-# Now that we have entered the OpenLANE flow contained docker sub-system we can invoke the OpenLANE flow in the Interactive mode using the following command
+
 ./flow.tcl -interactive
 
-# Now that OpenLANE flow is open we have to input the required packages for proper functionality of the OpenLANE flow
 package require openlane 0.9
 
-# Now the OpenLANE flow is ready to run any design and initially we have to prep the design creating some necessary files and directories for running a specific design which in our case is 'picorv32a'
 prep -design picorv32a
 
 # Addiitional commands to include newly added lef to openlane flow merged.lef
@@ -1108,15 +1108,16 @@ set ::env(SYNTH_STRATEGY) "DELAY 3"
 # Command to set new value for SYNTH_SIZING
 set ::env(SYNTH_SIZING) 1
 
-# Now that the design is prepped and ready, we can run synthesis using following command
 run_synthesis
+```
+![](image/518.png)
 
+```
 # Following commands are alltogather sourced in "run_floorplan" command
 init_floorplan
 place_io
 tap_decap_or
 
-# Now we are ready to run placement
 run_placement
 
 # Incase getting error
@@ -1129,17 +1130,20 @@ run_cts
 gen_pdn 
 
 ```
+![](image/511.png)
 
 Commands to load PDN def in magic in another terminal
 ```
 # Change directory to path containing generated PDN def
-cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/17-05_08-45/tmp/floorplan/
+cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/19-06_08-45/tmp/floorplan/
 
 # Command to load the PDN def in magic tool
 magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read 14-pdn.def &
 ```
+![](image/512.png)
 
 2. Perfrom detailed routing using TritonRoute and explore the routed layout.
+   
 Command to perform routing
 ```
 # Check value of 'CURRENT_DEF'
@@ -1151,36 +1155,44 @@ echo $::env(ROUTING_STRATEGY)
 # Command for detailed route using TritonRoute
 run_routing
 ```
+![](image/514.png)
+
 Commands to load routed def in magic in another terminal
 ```
 # Change directory to path containing routed def
-cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/17-05_08-45/results/routing/
+cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/19-06_08-45/results/routing/
 
 # Command to load the routed def in magic tool
 magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.def &
 ```
+Screenshots of routed def
+
+![](image/515.png)
+
+![](image/519.png)
 
 3. Post-Route parasitic extraction using SPEF extractor.
+   
 Commands for SPEF extraction using external tool
 ```
 # Change directory
 cd Desktop/work/tools/SPEF_EXTRACTOR
 
 # Command extract spef
-python3 main.py /home/vsduser/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/17-05_08-45/tmp/merged.lef /home/vsduser/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/17-05_08-45/results/routing/picorv32a.def
+python3 main.py /home/vsduser/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/19-06_08-45/tmp/merged.lef /home/vsduser/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/19-06_08-45/results/routing/picorv32a.def
 ```
+
 4. Post-Route OpenSTA timing analysis with the extracted parasitics of the route.
-Commands to be run in OpenLANE flow to do OpenROAD timing analysis with integrated OpenSTA in OpenROAD
+   
+The next step involves post-routing STA analysis, which requires the extraction of parasitic effects (SPEF).Since OpenLANE does not have a SPEF extraction tool, this process needs to be done outside of OpenLANE.The resulting .spef file can be located in the routing folder under the results folder.Commands to be run in OpenLANE flow to do OpenROAD timing analysis with integrated OpenSTA in OpenROAD
 
 ```
 # Command to run OpenROAD tool
 openroad
 
-# Reading lef file
-read_lef /openLANE_flow/designs/picorv32a/runs/17-05_08-45/tmp/merged.lef
+read_lef /openLANE_flow/designs/picorv32a/runs/19-06_08-45/tmp/merged.lef
 
-# Reading def file
-read_def /openLANE_flow/designs/picorv32a/runs/17-05_08-45/results/routing/picorv32a.def
+read_def /openLANE_flow/designs/picorv32a/runs/19-06_08-45/results/routing/picorv32a.def
 
 # Creating an OpenROAD database to work with
 write_db pico_route.db
@@ -1189,7 +1201,7 @@ write_db pico_route.db
 read_db pico_route.db
 
 # Read netlist post CTS
-read_verilog /openLANE_flow/designs/picorv32a/runs/17-05_08-45/results/synthesis/picorv32a.synthesis_preroute.v
+read_verilog /openLANE_flow/designs/picorv32a/runs/19-06_08-45/results/synthesis/picorv32a.synthesis_preroute.v
 
 # Read library for design
 read_liberty $::env(LIB_SYNTH_COMPLETE)
@@ -1203,15 +1215,21 @@ read_sdc /openLANE_flow/designs/picorv32a/src/my_base.sdc
 # Setting all cloks as propagated clocks
 set_propagated_clock [all_clocks]
 
-# Read SPEF
-read_spef /openLANE_flow/designs/picorv32a/runs/17-05_08-45/results/routing/picorv32a.spef
+read_spef /openLANE_flow/designs/picorv32a/runs/19-06_08-45/results/routing/picorv32a.spef
 
-# Generating custom timing report
 report_checks -path_delay min_max -fields {slew trans net cap input_pins} -format full_clock_expanded -digits 4
 
-# Exit to OpenLANE flow
-exit
 ```
+Screenshots of timing report
+
+![](image/516.png)
+
+![](image/517.png)
+
+
+
+
+
 
 
 
