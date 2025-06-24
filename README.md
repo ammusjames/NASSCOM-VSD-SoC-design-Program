@@ -444,7 +444,7 @@ ext2spice cthresh 0 rthresh 0
 ext2spice
 ```
 Thus, the spice file is created and shown below.
-![](image/54.png)
+![](image/544.png)
 
 Now, open the spice file using the following command.
 ```
@@ -459,13 +459,11 @@ Commands for ngspice simulation
 # Command to directly load spice file for simulation to ngspice
 ngspice sky130_inv.spice
 ```
-![](image/57.png)
-
 ```
 # Now that we have entered ngspice with the simulation spice file loaded we just have to load the plot
 plot y vs time a
-
 ```
+
 Screenshot of generated plot
 ![](image/57.png)
 
@@ -476,7 +474,6 @@ Screenshot of generated plot
 Rise Transition Time = Time taken for output to rise to 80% - Time taken for output to rise to rise to 20%
 
 20 % of output = 660mV
-
 80% of output = 2.64V
 
 ![](image/59.png)
