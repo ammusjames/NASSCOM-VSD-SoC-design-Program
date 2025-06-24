@@ -476,7 +476,7 @@ Rise Transition Time = Time taken for output to rise to 80% - Time taken for out
 20 % of output = 660mV
 80% of output = 2.64V
 
-![](image/59.png)
+![](image/60.png)
 
 Rise transition Time = 2.24638 – 2.18242 = 0,06396 ns = 63.96 ps
 
@@ -488,7 +488,7 @@ Fall Transition Time = Time taken for output to fall to 20% - Time taken for out
 
 80% of output = 2.64V
 
-![](image/60.png)
+![](image/62.png)
 
 Fall Transition Time = 4.0955 – 4.0536 = 0.0419 ns = 41.9 ps
 
@@ -498,9 +498,9 @@ Rise Cell Delay = Time taken for output to rise to 50 % - Time taken for input t
 
 50 % of 3.3 V = 1.65 V
 
-![](image/61.png)
+![](image/63.png)
 
-Rise Cell Delay = 2.2144 – 2.15008 = 0.06136 ns = 61.36 ps
+Rise Cell Delay = 2.2144 – 2.15 = 0.06136 ns = 61.36 ps
 
 **Fall Cell Delay Calculation:**
 
@@ -508,7 +508,6 @@ Fall Cell Delay = Time Taken For Output to Fall to 50% - Time taken for input to
 
 50 % of 3.3V = 1.65 V
 
-![](image/62.png)
 ![](image/63.png)
 
 Fall Cell Delay = 4.07 – 4.05 = 0.02 ns = 20 ps
