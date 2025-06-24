@@ -1,4 +1,4 @@
-Digital VLSI SoC Design and Planning 
+## Digital VLSI SoC Design and Planning 
 
 ## DAY 1
 ### Introduction to QFN-48 Package, chip, pads, core, die and IPs
@@ -1293,12 +1293,12 @@ Screenshots of timing report
 ![](image/517.png)
 
 
------
+----
 ## Acknowledgements
----
-*Kunal Ghosh, Co-founder, VLSI System Design.
-*Nickson P Jose, Technical Lead, HCLTech.
-*R. Timothy Edwards, Senior Vice President of Analog and Design, Efabless Corporation.
+
+* Kunal Ghosh, Co-founder, VLSI System Design.
+* Nickson P Jose, Technical Lead, HCLTech.
+* R. Timothy Edwards, Senior Vice President of Analog and Design, Efabless Corporation.
 
 
 
