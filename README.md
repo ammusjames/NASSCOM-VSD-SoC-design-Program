@@ -589,8 +589,6 @@ drc why
 
 Incorrectly implemented difftap.2 simple rule no drc violation even though spacing < 0.42u
 
-![](image/67.png)
-
 commands inserted in sky130A.tech file to update drc
 ![](image/98.png)
 
@@ -647,6 +645,7 @@ cd Desktop/work/tools/openlane_working_dir/openlane/vsdstdcelldesign
 # Command to open custom inverter layout in magic
 magic -T sky130A.tech sky130_inv.mag &
 ```
+open the tracks.info file by commond less tracks.info
 ![](image/411.png)
 
 Commands for tkcon window to set grid as tracks of locali layer
@@ -745,9 +744,6 @@ add_lefs -src $lefs
 run_synthesis
 
 ```
-
-![](image/421.png)
-
 ![](image/422.png)
 
 ![](image/423.png)
@@ -755,16 +751,17 @@ run_synthesis
 
 7.  Remove/reduce the newly introduced violations with the introduction of custom inverter cell by modifying design parameters.
 
-current design values generated before modifying parameters to improve timing:
-
+current design values generated before modifying parameters to improve timing are:
 ![](image/424.png)
-![](image/425.png)
 
 Commands to view and change parameters to improve timing and run synthesis
 ```
 # Now once again we have to prep design so as to update variables
-prep -design picorv32a -tag **_10-03** -overwrite
+prep -design picorv32a -tag 17-06_19-03** -overwrite
+```
+![](image/425.png)
 
+```
 # Addiitional commands to include newly added lef to openlane flow merged.lef
 set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
 add_lefs -src $lefs
@@ -824,9 +821,6 @@ run_placement
 
 Commands to load placement def in magic in another terminal
 ```
-# Change directory to path containing generated placement def
-cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/16-05_10-03/results/placement/
-
 # Command to load the placement def in magic tool
 magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.placement.def &
 ```
@@ -871,8 +865,8 @@ run_synthesis
 ![](image/433.png)
 
 Now, lets see this observation practically on openLANE by making 2 different files on different locations.
-File name: my_base.sdc
 ```
+# File name: my_base.sdc
 # path
 cd openlane/designs/picorv32a/src/
 ```
@@ -901,7 +895,7 @@ A positive slack indicates that the signal arrived early enough, meaning the des
 Since more fanout is causing more delay we can add parameter to reduce fanout and do synthesis again
 Commands to include new lef and perform synthesis
 ```
-prep -design picorv32a -tag 19-06_08-05 -overwrite
+prep -design picorv32a -tag 1-06_08-05 -overwrite
 
 # Adiitional commands to include newly added lef to openlane flow
 set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
@@ -976,7 +970,7 @@ Now to insert this updated netlist to PnR flow and we can use write_verilog and 
 
 Commands to make copy of netlist
 ```
-cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/19-06_18-52/results/synthesis/
+cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/19-06_10-02/results/synthesis/
 
 cp picorv32a.synthesis.v picorv32a.synthesis_old.v
 
@@ -985,7 +979,7 @@ cp picorv32a.synthesis.v picorv32a.synthesis_old.v
 help write_verilog
 
 # Overwriting current synthesis netlist
-write_verilog /home/vsduser/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/1-05_18-52/results/synthesis/picorv32a.synthesis.v
+write_verilog /home/vsduser/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/1-06_10-02/results/synthesis/picorv32a.synthesis.v
 
 # Exit from OpenSTA since timing analysis is done
 exit
@@ -998,7 +992,7 @@ Since we confirmed that netlist is replaced and will be loaded in PnR but since 
 Commands load the design and run necessary stages
 ```
 # Now once again we have to prep design so as to update variables
-prep -design picorv32a -tag 19-06_10-03 -overwrite
+prep -design picorv32a -tag 19-06_10-02 -overwrite
 
 # Addiitional commands to include newly added lef to openlane flow merged.lef
 set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
@@ -1034,10 +1028,10 @@ Commands to be run in OpenLANE flow to do OpenROAD timing analysis with integrat
 openroad
 
 # Reading lef file
-read_lef /openLANE_flow/designs/picorv32a/runs/17-03_10-03/tmp/merged.lef
+read_lef /openLANE_flow/designs/picorv32a/runs/19-06_10-02/tmp/merged.lef
 
 # Reading def file
-read_def /openLANE_flow/designs/picorv32a/runs/17-03_10-03/results/cts/picorv32a.cts.def
+read_def /openLANE_flow/designs/picorv32a/runs/19-06_10-02/results/cts/picorv32a.cts.def
 
 # Creating an OpenROAD database to work with
 write_db pico_cts.db
@@ -1046,7 +1040,7 @@ write_db pico_cts.db
 read_db pico_cts.db
 
 # Read netlist post CTS
-read_verilog /openLANE_flow/designs/picorv32a/runs/19-06_10-03/results/synthesis/picorv32a.synthesis_cts.v
+read_verilog /openLANE_flow/designs/picorv32a/runs/19-06_10-02/results/synthesis/picorv32a.synthesis_cts.v
 
 # Read library for design
 read_liberty $::env(LIB_SYNTH_COMPLETE)
@@ -1207,7 +1201,7 @@ gen_pdn
 Commands to load PDN def in magic in another terminal
 ```
 # Change directory to path containing generated PDN def
-cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/19-06_08-45/tmp/floorplan/
+cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/19-06_10-45/tmp/floorplan/
 
 # Command to load the PDN def in magic tool
 magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read 14-pdn.def &
@@ -1232,7 +1226,7 @@ run_routing
 Commands to load routed def in magic in another terminal
 ```
 # Change directory to path containing routed def
-cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/19-06_08-45/results/routing/
+cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/19-06_10-45/results/routing/
 
 # Command to load the routed def in magic tool
 magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.def &
@@ -1251,7 +1245,7 @@ Commands for SPEF extraction using external tool
 cd Desktop/work/tools/SPEF_EXTRACTOR
 
 # Command extract spef
-python3 main.py /home/vsduser/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/19-06_08-45/tmp/merged.lef /home/vsduser/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/19-06_08-45/results/routing/picorv32a.def
+python3 main.py /home/vsduser/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/19-06_10-45/tmp/merged.lef /home/vsduser/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/19-06_10-45/results/routing/picorv32a.def
 ```
 
 4. Post-Route OpenSTA timing analysis with the extracted parasitics of the route.
@@ -1262,9 +1256,9 @@ The next step involves post-routing STA analysis, which requires the extraction 
 # Command to run OpenROAD tool
 openroad
 
-read_lef /openLANE_flow/designs/picorv32a/runs/19-06_08-45/tmp/merged.lef
+read_lef /openLANE_flow/designs/picorv32a/runs/19-06_0-45/tmp/merged.lef
 
-read_def /openLANE_flow/designs/picorv32a/runs/19-06_08-45/results/routing/picorv32a.def
+read_def /openLANE_flow/designs/picorv32a/runs/19-06_10-45/results/routing/picorv32a.def
 
 # Creating an OpenROAD database to work with
 write_db pico_route.db
@@ -1273,7 +1267,7 @@ write_db pico_route.db
 read_db pico_route.db
 
 # Read netlist post CTS
-read_verilog /openLANE_flow/designs/picorv32a/runs/19-06_08-45/results/synthesis/picorv32a.synthesis_preroute.v
+read_verilog /openLANE_flow/designs/picorv32a/runs/19-06_10-45/results/synthesis/picorv32a.synthesis_preroute.v
 
 # Read library for design
 read_liberty $::env(LIB_SYNTH_COMPLETE)
@@ -1287,7 +1281,7 @@ read_sdc /openLANE_flow/designs/picorv32a/src/my_base.sdc
 # Setting all cloks as propagated clocks
 set_propagated_clock [all_clocks]
 
-read_spef /openLANE_flow/designs/picorv32a/runs/19-06_08-45/results/routing/picorv32a.spef
+read_spef /openLANE_flow/designs/picorv32a/runs/19-06_10-45/results/routing/picorv32a.spef
 
 report_checks -path_delay min_max -fields {slew trans net cap input_pins} -format full_clock_expanded -digits 4
 
@@ -1299,7 +1293,12 @@ Screenshots of timing report
 ![](image/517.png)
 
 
-
+-----
+## Acknowledgements
+---
+*Kunal Ghosh, Co-founder, VLSI System Design.
+*Nickson P Jose, Technical Lead, HCLTech.
+*R. Timothy Edwards, Senior Vice President of Analog and Design, Efabless Corporation.
 
 
 
